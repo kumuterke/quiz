@@ -65,7 +65,6 @@
 </div>
 
 <script>
-    // --- CHAT ANALİZİ VE DEV SORU HAVUZU (TAMAMEN BÖCEK OLARAK GÜNCELLENDİ) ---
     const masterPool = [
         { q: "Bizim 'Miladımız' (sevgili olduğumuz gün) hangisi? ❤️", a: ["7 Ocak 2026", "1 Ocak 2026", "27 Ocak 2026", "8 Aralık 2025"], c: 0 },
         { q: "İlk görüntülü konuşmamız rekor kırarak tam kaç dakika sürdü? 📞", a: ["102 Dakika", "60 Dakika", "90 Dakika", "3 Saat"], c: 0 },
@@ -75,7 +74,7 @@
         { q: "Anasınıfı fotoğrafları üzerine o derin sohbeti hangi tarihte yaptık? 📸", a: ["8 Aralık", "1 Ocak", "7 Ocak", "27 Ocak"], c: 0 },
         { q: "Böcek şu an tam olarak hangi Alman şehrinde yaşıyor? 🇩🇪", a: ["Augsburg", "Münih", "Berlin", "Frankfurt"], c: 0 },
         { q: "Mina (Mein) şu an hangi şehirde bulunuyor? 🇹🇷", a: ["Ankara", "İstanbul", "İzmir", "Bursa"], c: 0 },
-        { q: "Kavuşmamız için (ilk hedefimiz) belirlediğimiz tarih hangisi? ✈️", a: ["6 Şubat", "14 Şubat", "1 Mart", "Yazın"], c: 0 },
+        { q: "Kavuşmamız için (ilk hedefimiz) belirlediğimiz tarih hangisi? ✈️", a: ["6 Şubat 2026", "14 Şubat", "1 Mart", "Yazın"], c: 0 },
         { q: "Almanya'da 'Yıldırım Nikahı' hayali kurduğumuz o çılgın gün? 💍", a: ["28 Ocak", "7 Ocak", "14 Şubat", "Dün"], c: 0 },
         { q: "Bizim ilişkimizi en iyi anlatan emoji hangisidir? ✨", a: ["🐛 (Böcek)", "❤️ (Klasik)", "🔥 (Tutku)", "🧿 (Nazar)"], c: 0 },
         { q: "Mina sinirlendiğinde Böcek'in yapması gereken en mantıklı şey? 🛡️", a: ["Öpücük atıp susturmalı", "Küsülmeli", "Tartışmalı", "Kaçmalı"], c: 0 },
@@ -131,6 +130,10 @@
             el.classList.add("correct");
             score++;
             el.innerHTML += " ✅";
+            
+            // --- SKORUN ARTMASINI SAĞLAYAN KRİTİK MESAJ ---
+            window.parent.postMessage('quizCorrect', '*'); 
+
         } else {
             el.classList.add("wrong");
             el.innerHTML += " ❌";
