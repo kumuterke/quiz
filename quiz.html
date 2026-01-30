@@ -29,12 +29,12 @@
         .opt { 
             background: var(--card-bg); border: 2px solid var(--border); border-radius: 15px; 
             padding: 15px; cursor: pointer; transition: 0.2s; font-weight: 500; color: var(--text); 
-            font-size: 0.95rem; user-select: none;
+            font-size: 0.95rem; user-select: none; text-align: center;
         }
         .opt:active { transform: scale(0.98); }
         
-        .correct { background: #1b4332 !important; border-color: #2d6a4f !important; color: #d8f3dc !important; }
-        .wrong { background: #5a1a1a !important; border-color: #a4161a !important; color: #f5e1e1 !important; }
+        .correct { background: #1b4332 !important; border-color: #2ecc71 !important; color: #fff !important; }
+        .wrong { background: #5a1a1a !important; border-color: #e74c3c !important; color: #fff !important; }
         
         #next-btn { 
             display: none; background: var(--dark-pink); color: white; border: none; 
@@ -52,7 +52,7 @@
     <button class="theme-btn" onclick="document.body.classList.toggle('light-mode')">🌓</button>
     
     <div id="quiz-area">
-        <h2>Aşk Testi ♾️</h2>
+        <h2>Aşk Testi ✨</h2>
         <small id="stats">Soru 1 / 15</small>
         <div class="progress-container"><div class="progress-bar" id="fill"></div></div>
         
@@ -65,76 +65,35 @@
 </div>
 
 <script>
-    // --- 100 HİSSİ VEREN DEVASA SORU HAVUZU ---
+    // --- CHAT ANALİZİ VE DEV SORU HAVUZU (TAMAMEN BÖCEK OLARAK GÜNCELLENDİ) ---
     const masterPool = [
-        // --- 1. BÖLÜM: BİZİM HİKAYEMİZ (Chat Verileri) ---
         { q: "Bizim 'Miladımız' (sevgili olduğumuz gün) hangisi? ❤️", a: ["7 Ocak 2026", "1 Ocak 2026", "27 Ocak 2026", "8 Aralık 2025"], c: 0 },
-        { q: "İlk görüntülü konuşmamız rekor kırarak kaç dakika sürdü? 📞", a: ["102 Dakika", "60 Dakika", "90 Dakika", "3 Saat"], c: 0 },
-        { q: "Böcek'in (Tyler) doğduğu ay hangisi? 🐛", a: ["Mart", "Ekim", "Ocak", "Nisan"], c: 0 },
-        { q: "Mina'nın (Mein) doğduğu ay hangisi? 🎂", a: ["Ekim", "Mart", "Haziran", "Ağustos"], c: 0 },
-        { q: "Tyler'ın sana hitap ederken kullandığı o özel kelime? 🇩🇪", a: ["Mein", "Schatz", "Liebe", "Herz"], c: 0 },
-        { q: "Hangi tarihte 'Anasınıfı Fotoğrafları' üzerine derin derin konuştuk?", a: ["8 Aralık", "1 Ocak", "7 Ocak", "14 Şubat"], c: 0 },
-        { q: "Tyler şu an tam olarak nerede yaşıyor?", a: ["Augsburg", "Münih", "Berlin", "Frankfurt"], c: 0 },
-        { q: "Mina şu an tam olarak nerede?", a: ["Ankara", "İstanbul", "İzmir", "Bursa"], c: 0 },
-        { q: "Bizim 'Kavuşma' tarihimiz (veya ilk hedef) ne zaman?", a: ["6 Şubat", "14 Şubat", "1 Mart", "Yazın"], c: 0 },
-        { q: "Uygulamadaki 'Aynı Anda Yıldızlara Bakıyoruz' özelliği ne zaman çalışır?", a: ["Hava durumu senkronize olunca", "Gece 12'de", "Tyler uyuyunca", "Her zaman"], c: 0 },
-
-        // --- 2. BÖLÜM: KİM DAHA... (Eğlenceli) ---
-        { q: "Kim daha kıskanç? 😠", a: ["Mina", "Tyler", "İkisi de eşit", "Hiçbiri"], c: 0 },
-        { q: "Kim daha uykucu? 😴", a: ["Tyler", "Mina", "İkisi de koala", "Biz uyumayız"], c: 0 },
-        { q: "Kim daha çok 'Seni Özledim' butonuna basıyor?", a: ["Mina", "Tyler", "Yarış halindeyiz", "Sayaç bozuldu"], c: 2 },
-        { q: "Tartışmalarda kim önce alttan alır?", a: ["Tyler", "Mina", "O anki moda bağlı", "Kimse almaz"], c: 0 },
-        { q: "Kim daha iyi yemek yapar (veya yapacağını iddia eder)? 🍳", a: ["Mina", "Tyler", "Getir", "Annelerimiz"], c: 0 },
-        { q: "Sabahları kim daha huysuz uyanır?", a: ["Tyler", "Mina", "İkimiz de pamuk gibiyiz", "Bilinmiyor"], c: 0 },
-        { q: "Kim teknolojiyle daha çok haşır neşir? 💻", a: ["Tyler (Böcek OS Kurucusu)", "Mina", "Eşit", "Google"], c: 0 },
-        { q: "Kim daha çok abur cubur yer?", a: ["Mina", "Tyler", "Diyet yapıyoruz", "Beraber yeriz"], c: 0 },
-
-        // --- 3. BÖLÜM: FAVORİLER & ZEVKLER ---
-        { q: "Mina'nın en sevdiği renk (tahminen)? 🎨", a: ["Pembe", "Siyah", "Mavi", "Mor"], c: 0 },
-        { q: "Tyler'ın en sevdiği aktivite? 🎮", a: ["Kod yazmak / Oyun", "Uyumak", "Gezmek", "Alışveriş"], c: 0 },
-        { q: "Bizim ilişkimizi en iyi anlatan emoji hangisi?", a: ["❤️ (Klasik)", "🐛 (Böcek)", "🔥 (Tutku)", "✈️ (Mesafe)"], c: 1 },
-        { q: "Hangi içeceği daha çok tüketiyoruz?", a: ["Kahve", "Çay", "Su", "Redbull"], c: 0 },
-        { q: "Hangi mevsim bize daha çok yakışır?", a: ["Kış (Sarılmalık)", "Yaz (Tatil)", "Bahar", "Sonbahar"], c: 0 },
-        { q: "Beraber izlememiz gereken film türü?", a: ["Korku (Sarılmak için)", "Romantik", "Komedi", "Bilim Kurgu"], c: 0 },
-
-        // --- 4. BÖLÜM: GELECEK HAYALLERİ 🔮 ---
-        { q: "Hangi gün Almanya'da 'yıldırım nikahı' hayali kurduk? 💍", a: ["28 Ocak", "7 Ocak", "14 Şubat", "Dün"], c: 0 },
-        { q: "İleride nerede yaşamayı planlıyoruz?", a: ["Almanya", "Türkiye", "Amerika", "Mars"], c: 0 },
-        { q: "Sence evimizde en çok ne olacak?", a: ["Aşk", "Teknoloji", "Kedi/Köpek", "Yemek"], c: 0 },
-        { q: "Balayı için hayalimizdeki kıta?", a: ["Avrupa", "Asya", "Amerika", "Antarktika"], c: 0 },
-        { q: "Bizim kaç çocuğumuz olmalı? 👶", a: ["2", "1", "3", "Futbol takımı"], c: 0 },
-
-        // --- 5. BÖLÜM: ZOR SORULAR (Dikkat Gerektirir) ---
-        { q: "Tyler'ın Mina'ya ilk hitabı neydi?", a: ["Hatırlamıyorum (Yanlış Cevap)", "İsmiyle", "Canım", "Merhaba"], c: 1 },
-        { q: "Mina sinirlendiğinde Tyler ne yapmalı? 🚨", a: ["Sessizce sarılmalı (Sanal)", "Mantık aramalı", "Kaçmalı", "Çikolata yollamalı"], c: 0 },
-        { q: "Aramızdaki mesafe (km) yaklaşık ne kadar?", a: ["2000-2500 km", "1000 km", "5000 km", "0 (Kalben)"], c: 0 },
-        { q: "Böcek'in en büyük korkusu nedir?", a: ["Seni kaybetmek", "Yükseklik", "Örümcek", "İnternetin kesilmesi"], c: 0 },
-        { q: "Bu uygulamayı (Böcek OS) kim yaptı?", a: ["Tyler", "Elon Musk", "Mark Zuckerberg", "Yapay Zeka"], c: 0 },
-        
-        // --- 6. BÖLÜM: RANDOM EĞLENCE ---
-        { q: "Şu an Tyler seni ne kadar seviyor?", a: ["Sonsuz ∞", "Çok", "Baya", "Evren kadar"], c: 0 },
-        { q: "Gece uyumadan önce yapılan son şey?", a: ["İyi geceler mesajı", "Su içmek", "Telefonu şarja takmak", "Tavanı izlemek"], c: 0 },
-        { q: "Tyler'ın en sevdiği özelliğin?", a: ["Gülüşün", "Gözlerin", "Sesin", "Hepsi"], c: 3 },
-        { q: "Mina'nın en sevdiği özelliğin?", a: ["Zekası", "Güzelliği", "Kalbi", "Hepsi"], c: 3 },
-        { q: "Bizim şarkımız ne olmalı?", a: ["Henüz seçmedik", "Romantik bir klasik", "Rap", "Pop"], c: 0 }
+        { q: "İlk görüntülü konuşmamız rekor kırarak tam kaç dakika sürdü? 📞", a: ["102 Dakika", "60 Dakika", "90 Dakika", "3 Saat"], c: 0 },
+        { q: "Böcek'in doğduğu ay hangisidir? 🐛", a: ["Mart", "Ekim", "Ocak", "Nisan"], c: 0 },
+        { q: "Mina'nın (Mein) doğduğu ay hangisidir? 🎂", a: ["Ekim", "Mart", "Haziran", "Aralık"], c: 0 },
+        { q: "Böcek'in sana hitap ederken kullandığı o özel kelime hangisidir? 🇩🇪", a: ["Mein", "Schatz", "Liebe", "Canım"], c: 0 },
+        { q: "Anasınıfı fotoğrafları üzerine o derin sohbeti hangi tarihte yaptık? 📸", a: ["8 Aralık", "1 Ocak", "7 Ocak", "27 Ocak"], c: 0 },
+        { q: "Böcek şu an tam olarak hangi Alman şehrinde yaşıyor? 🇩🇪", a: ["Augsburg", "Münih", "Berlin", "Frankfurt"], c: 0 },
+        { q: "Mina (Mein) şu an hangi şehirde bulunuyor? 🇹🇷", a: ["Ankara", "İstanbul", "İzmir", "Bursa"], c: 0 },
+        { q: "Kavuşmamız için (ilk hedefimiz) belirlediğimiz tarih hangisi? ✈️", a: ["6 Şubat", "14 Şubat", "1 Mart", "Yazın"], c: 0 },
+        { q: "Almanya'da 'Yıldırım Nikahı' hayali kurduğumuz o çılgın gün? 💍", a: ["28 Ocak", "7 Ocak", "14 Şubat", "Dün"], c: 0 },
+        { q: "Bizim ilişkimizi en iyi anlatan emoji hangisidir? ✨", a: ["🐛 (Böcek)", "❤️ (Klasik)", "🔥 (Tutku)", "🧿 (Nazar)"], c: 0 },
+        { q: "Mina sinirlendiğinde Böcek'in yapması gereken en mantıklı şey? 🛡️", a: ["Öpücük atıp susturmalı", "Küsülmeli", "Tartışmalı", "Kaçmalı"], c: 0 },
+        { q: "Böcek Augsburg'da en çok neyi özlüyor? (Sen hariç!) 😋", a: ["Yemekleri", "İnterneti", "Havayı", "Uykuyu"], c: 0 },
+        { q: "Bizim 'uğurlu' sayımız veya o meşhur tarihimiz nedir? ✨", a: ["7", "102", "13", "∞"], c: 0 },
+        { q: "Şu an Böcek seni ne kadar çok seviyor? 🥰", a: ["Sonsuz ∞", "Çok", "Baya", "Evren kadar"], c: 0 }
     ];
 
-    // Soruları Karıştır (Shuffle)
     function shuffle(array) {
         return array.sort(() => Math.random() - 0.5);
     }
 
-    // Cevapları da karıştır ki "A şıkkı" hep doğru olmasın
     function prepareQuestions() {
-        const selectedQuestions = shuffle([...masterPool]).slice(0, 15); // Her seferinde rastgele 15 soru
-        return selectedQuestions.map(q => {
-            // Doğru cevabı tut
+        const selected = shuffle([...masterPool]).slice(0, 15); 
+        return selected.map(q => {
             const correctText = q.a[q.c];
-            // Cevap şıklarını karıştır
-            const shuffledAnswers = shuffle([...q.a]);
-            // Yeni doğru cevap indeksini bul
-            const newCorrectIndex = shuffledAnswers.indexOf(correctText);
-            return { q: q.q, a: shuffledAnswers, c: newCorrectIndex };
+            const shuffledA = shuffle([...q.a]);
+            return { q: q.q, a: shuffledA, c: shuffledA.indexOf(correctText) };
         });
     }
 
@@ -165,20 +124,19 @@
 
     function check(i, el) {
         const correct = activeQuiz[current].c;
-        const allOpts = document.getElementsByClassName("opt");
-        for(let o of allOpts) o.style.pointerEvents = "none";
+        const allOpts = document.querySelectorAll(".opt");
+        allOpts.forEach(btn => btn.style.pointerEvents = "none");
         
         if(i === correct) {
             el.classList.add("correct");
             score++;
-            // Konfetili Tebrik (Basit Efekt)
             el.innerHTML += " ✅";
         } else {
             el.classList.add("wrong");
             el.innerHTML += " ❌";
             allOpts[correct].classList.add("correct");
         }
-        document.getElementById("next-btn").style.display = "inline-block";
+        document.getElementById("next-btn").style.display = "block";
     }
 
     function nextQuestion() {
@@ -192,9 +150,9 @@
         r.style.display = "block";
         
         let msg = "";
-        if(score === 15) msg = "🏆 İNANILMAZ! Sen tam bir 'Mein'sin! Bizi avucunun içi gibi biliyorsun. ❤️";
+        if(score === 15) msg = "🏆 İNANILMAZ! Sen tam bir 'Mein'sin! Böcek seninle gurur duyuyor. ❤️";
         else if(score > 12) msg = "Harikasın! Ufak tefek hatalar olsa da aşkımız 10 numara! 😍";
-        else if(score > 8) msg = "Fena değil, ama Tyler ile biraz daha sohbet etmelisin. 😉";
+        else if(score > 8) msg = "Fena değil, ama Böcek ile biraz daha sohbet etmelisin. 😉";
         else msg = "Eyvah! Böcek buna biraz üzülebilir... Hemen çalışmaya başla! 😂";
 
         r.innerHTML = `
