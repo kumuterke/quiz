@@ -3,71 +3,153 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Böcek & Mein | Büyük Aşk Testi</title>
+    <title>Böcek & Mein | Sonsuz Aşk Testi ♾️</title>
     <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Poppins:wght@300;600&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Poppins', sans-serif; background: transparent; margin: 0; padding: 10px; color: #444; }
-        .quiz-card { background: white; padding: 25px; border-radius: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); text-align: center; max-width: 500px; margin: auto; }
-        h2 { font-family: 'Pacifico'; color: #d63384; font-size: 1.8rem; margin-bottom: 15px; }
-        .progress-bar { width: 100%; height: 6px; background: #eee; border-radius: 10px; margin-bottom: 20px; overflow: hidden; }
-        .progress-fill { height: 100%; background: #ff9a9e; width: 0%; transition: 0.5s; }
-        .q-text { font-weight: 600; font-size: 1.1rem; margin-bottom: 25px; display: block; min-height: 50px; }
-        .options-grid { display: grid; grid-template-columns: 1fr; gap: 10px; }
-        .opt { background: #fff; border: 2px solid #f0f0f0; border-radius: 15px; padding: 15px; cursor: pointer; transition: 0.3s; font-weight: 500; }
-        .opt:hover { border-color: #ff9a9e; background: #fff5f6; transform: translateY(-2px); }
-        .correct { background: #d4edda !important; border-color: #28a745 !important; color: #155724; }
-        .wrong { background: #f8d7da !important; border-color: #dc3545 !important; color: #721c24; }
-        #next-btn { display: none; background: #d63384; color: white; border: none; padding: 12px 35px; border-radius: 50px; cursor: pointer; margin-top: 25px; font-weight: 600; box-shadow: 0 5px 15px rgba(214, 51, 132, 0.3); }
+        :root { --bg: #121212; --card-bg: #1e1e1e; --text: #fdfbfb; --border: #333; --main-pink: #ff9a9e; --dark-pink: #d63384; --opt-hover: #2d2d2d; }
+        body.light-mode { --bg: #fff5f7; --card-bg: #ffffff; --text: #444; --border: #f0f0f0; --opt-hover: #fff5f6; }
+        body { font-family: 'Poppins', sans-serif; background: var(--bg); margin: 0; padding: 15px; color: var(--text); transition: 0.3s; min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        
+        .quiz-card { 
+            background: var(--card-bg); padding: 25px; border-radius: 25px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3); text-align: center; 
+            width: 100%; max-width: 500px; position: relative; border: 1px solid var(--border); 
+        }
+        
+        .theme-btn { position: absolute; top: 15px; right: 15px; background: var(--border); border: none; border-radius: 50%; width: 35px; height: 35px; cursor: pointer; color: var(--text); font-size: 1.2rem; }
+        h2 { font-family: 'Pacifico'; color: var(--main-pink); font-size: 2rem; margin-bottom: 5px; margin-top: 0; }
+        small { display: block; opacity: 0.6; margin-bottom: 20px; font-size: 0.8rem; }
+        
+        .progress-container { width: 100%; background: var(--border); height: 8px; border-radius: 10px; margin-bottom: 25px; overflow: hidden; }
+        .progress-bar { height: 100%; background: linear-gradient(90deg, var(--main-pink), var(--dark-pink)); width: 0%; transition: 0.4s; }
+        
+        .q-text { font-weight: 600; font-size: 1.2rem; margin-bottom: 30px; display: block; min-height: 50px; line-height: 1.4; }
+        
+        .options-grid { display: grid; grid-template-columns: 1fr; gap: 12px; }
+        .opt { 
+            background: var(--card-bg); border: 2px solid var(--border); border-radius: 15px; 
+            padding: 15px; cursor: pointer; transition: 0.2s; font-weight: 500; color: var(--text); 
+            font-size: 0.95rem; user-select: none;
+        }
+        .opt:active { transform: scale(0.98); }
+        
+        .correct { background: #1b4332 !important; border-color: #2d6a4f !important; color: #d8f3dc !important; }
+        .wrong { background: #5a1a1a !important; border-color: #a4161a !important; color: #f5e1e1 !important; }
+        
+        #next-btn { 
+            display: none; background: var(--dark-pink); color: white; border: none; 
+            padding: 15px 40px; border-radius: 50px; cursor: pointer; margin-top: 30px; 
+            font-weight: 600; box-shadow: 0 5px 15px rgba(214, 51, 132, 0.3); font-size: 1rem; width: 100%;
+        }
+        
+        #result { display: none; padding: 20px; }
+        .confetti { font-size: 3rem; margin-bottom: 10px; display: block; }
     </style>
 </head>
 <body>
 
 <div class="quiz-card">
-    <div class="progress-bar"><div class="progress-fill" id="fill"></div></div>
-    <div id="stats" style="font-size: 0.8rem; color: #aaa; margin-bottom: 5px;">Soru 1 / 10</div>
-    <h2>Aşk Testi ✨</h2>
-    <span class="q-text" id="q-text">Yükleniyor...</span>
-    <div class="options-grid" id="options"></div>
-    <button id="next-btn" onclick="nextQuestion()">Sıradaki Soru 👉</button>
-    <div id="result" style="display:none; padding:20px;"></div>
+    <button class="theme-btn" onclick="document.body.classList.toggle('light-mode')">🌓</button>
+    
+    <div id="quiz-area">
+        <h2>Aşk Testi ♾️</h2>
+        <small id="stats">Soru 1 / 15</small>
+        <div class="progress-container"><div class="progress-bar" id="fill"></div></div>
+        
+        <span class="q-text" id="q-text">Sorular yükleniyor...</span>
+        <div class="options-grid" id="options"></div>
+        <button id="next-btn" onclick="nextQuestion()">Sıradaki Soru 👉</button>
+    </div>
+
+    <div id="result"></div>
 </div>
 
 <script>
-    // GENİŞ SORU HAVUZU (Buraya binlerce soru ekleyebilirsin)
+    // --- 100 HİSSİ VEREN DEVASA SORU HAVUZU ---
     const masterPool = [
-        { q: "Bizim miladımız (yıldönümümüz) hangisi?", a: ["1 Ocak", "7 Ocak", "15 Ocak", "27 Ocak"], c: 1 },
-        { q: "Mein en çok hangi şehri hayal ediyor?", a: ["Berlin", "Augsburg", "Paris", "İstanbul"], c: 1 },
-        { q: "İlk görüntülü konuşmamız kaç dakika sürdü?", a: ["80", "95", "102", "110"], c: 2 },
-        { q: "Böcek'in Augsburg'daki en büyük derdi?", a: ["Soğuk", "Yemekler", "Senin Özlemin", "Almanca"], c: 2 },
-        { q: "Mina'nın burcu nedir?", a: ["Terazi", "Akrep", "Yay", "Başak"], c: 0 },
-        { q: "Böcek'in doğum günü ayı?", a: ["Mart", "Nisan", "Eylül", "Ekim"], c: 0 },
-        { q: "Bizim uğurlu sayımız kaç olmalı?", a: ["7", "102", "5", "∞"], c: 1 },
-        { q: "Hangi gün Almanya'da yıldırım nikahı hayali kurduk?", a: ["25 Ocak", "27 Ocak", "28 Ocak", "Her gün"], c: 2 },
-        { q: "İlk tanıştığımızda havada ne vardı?", a: ["Kar", "Yağmur", "Aşk Kokusu", "Güneş"], c: 2 },
-        { q: "Mein'ın en sevdiği içecek?", a: ["Kahve", "Çay", "Su", "Meyve Suyu"], c: 0 },
-        { q: "Böcek Mein'a en son ne zaman 'Seni Seviyorum' dedi?", a: ["1 dk önce", "1 saat önce", "Dün", "Her saniye"], c: 3 },
-        { q: "Evlendiğimizde ilk nereye gideceğiz?", a: ["Balayı", "Eve", "Almanya turuna", "Yemeğe"], c: 0 },
-        { q: "Mein'ın en nefret ettiği şey?", a: ["Yalan", "Geç cevap", "Soğuk", "Hepsi"], c: 3 },
-        { q: "Böcek'in en sevdiği özelliği?", a: ["Gözleri", "Sesi", "Gülüşü", "Hepsi"], c: 3 },
-        { q: "Bizim şarkımız hangisi olmalı?", a: ["Romantik", "Hareketli", "Bize özel", "Henüz bulamadık"], c: 2 },
-        { q: "Hangi emojiyi 'bizim' ilan ettik?", a: ["❤️", "🐛", "🥰", "🧿"], c: 1 },
-        { q: "Mein'ın en sevdiği yemek?", a: ["Mantı", "Pizza", "Sarma", "Hamburger"], c: 2 },
-        { q: "Böcek en çok neyi özlüyor?", a: ["Türkiye'yi", "Yemekleri", "Mina'yı", "Arkadaşlarını"], c: 2 },
-        { q: "Sence biz kaç çocuk yapmalıyız?", a: ["1", "2", "3", "Sürüyle!"], c: 1 },
-        { q: "Bu testi kim hazırladı?", a: ["Yapay Zeka", "Böcek", "Kader", "Böcek'in Aşkı"], c: 3 }
+        // --- 1. BÖLÜM: BİZİM HİKAYEMİZ (Chat Verileri) ---
+        { q: "Bizim 'Miladımız' (sevgili olduğumuz gün) hangisi? ❤️", a: ["7 Ocak 2026", "1 Ocak 2026", "27 Ocak 2026", "8 Aralık 2025"], c: 0 },
+        { q: "İlk görüntülü konuşmamız rekor kırarak kaç dakika sürdü? 📞", a: ["102 Dakika", "60 Dakika", "90 Dakika", "3 Saat"], c: 0 },
+        { q: "Böcek'in (Tyler) doğduğu ay hangisi? 🐛", a: ["Mart", "Ekim", "Ocak", "Nisan"], c: 0 },
+        { q: "Mina'nın (Mein) doğduğu ay hangisi? 🎂", a: ["Ekim", "Mart", "Haziran", "Ağustos"], c: 0 },
+        { q: "Tyler'ın sana hitap ederken kullandığı o özel kelime? 🇩🇪", a: ["Mein", "Schatz", "Liebe", "Herz"], c: 0 },
+        { q: "Hangi tarihte 'Anasınıfı Fotoğrafları' üzerine derin derin konuştuk?", a: ["8 Aralık", "1 Ocak", "7 Ocak", "14 Şubat"], c: 0 },
+        { q: "Tyler şu an tam olarak nerede yaşıyor?", a: ["Augsburg", "Münih", "Berlin", "Frankfurt"], c: 0 },
+        { q: "Mina şu an tam olarak nerede?", a: ["Ankara", "İstanbul", "İzmir", "Bursa"], c: 0 },
+        { q: "Bizim 'Kavuşma' tarihimiz (veya ilk hedef) ne zaman?", a: ["6 Şubat", "14 Şubat", "1 Mart", "Yazın"], c: 0 },
+        { q: "Uygulamadaki 'Aynı Anda Yıldızlara Bakıyoruz' özelliği ne zaman çalışır?", a: ["Hava durumu senkronize olunca", "Gece 12'de", "Tyler uyuyunca", "Her zaman"], c: 0 },
+
+        // --- 2. BÖLÜM: KİM DAHA... (Eğlenceli) ---
+        { q: "Kim daha kıskanç? 😠", a: ["Mina", "Tyler", "İkisi de eşit", "Hiçbiri"], c: 0 },
+        { q: "Kim daha uykucu? 😴", a: ["Tyler", "Mina", "İkisi de koala", "Biz uyumayız"], c: 0 },
+        { q: "Kim daha çok 'Seni Özledim' butonuna basıyor?", a: ["Mina", "Tyler", "Yarış halindeyiz", "Sayaç bozuldu"], c: 2 },
+        { q: "Tartışmalarda kim önce alttan alır?", a: ["Tyler", "Mina", "O anki moda bağlı", "Kimse almaz"], c: 0 },
+        { q: "Kim daha iyi yemek yapar (veya yapacağını iddia eder)? 🍳", a: ["Mina", "Tyler", "Getir", "Annelerimiz"], c: 0 },
+        { q: "Sabahları kim daha huysuz uyanır?", a: ["Tyler", "Mina", "İkimiz de pamuk gibiyiz", "Bilinmiyor"], c: 0 },
+        { q: "Kim teknolojiyle daha çok haşır neşir? 💻", a: ["Tyler (Böcek OS Kurucusu)", "Mina", "Eşit", "Google"], c: 0 },
+        { q: "Kim daha çok abur cubur yer?", a: ["Mina", "Tyler", "Diyet yapıyoruz", "Beraber yeriz"], c: 0 },
+
+        // --- 3. BÖLÜM: FAVORİLER & ZEVKLER ---
+        { q: "Mina'nın en sevdiği renk (tahminen)? 🎨", a: ["Pembe", "Siyah", "Mavi", "Mor"], c: 0 },
+        { q: "Tyler'ın en sevdiği aktivite? 🎮", a: ["Kod yazmak / Oyun", "Uyumak", "Gezmek", "Alışveriş"], c: 0 },
+        { q: "Bizim ilişkimizi en iyi anlatan emoji hangisi?", a: ["❤️ (Klasik)", "🐛 (Böcek)", "🔥 (Tutku)", "✈️ (Mesafe)"], c: 1 },
+        { q: "Hangi içeceği daha çok tüketiyoruz?", a: ["Kahve", "Çay", "Su", "Redbull"], c: 0 },
+        { q: "Hangi mevsim bize daha çok yakışır?", a: ["Kış (Sarılmalık)", "Yaz (Tatil)", "Bahar", "Sonbahar"], c: 0 },
+        { q: "Beraber izlememiz gereken film türü?", a: ["Korku (Sarılmak için)", "Romantik", "Komedi", "Bilim Kurgu"], c: 0 },
+
+        // --- 4. BÖLÜM: GELECEK HAYALLERİ 🔮 ---
+        { q: "Hangi gün Almanya'da 'yıldırım nikahı' hayali kurduk? 💍", a: ["28 Ocak", "7 Ocak", "14 Şubat", "Dün"], c: 0 },
+        { q: "İleride nerede yaşamayı planlıyoruz?", a: ["Almanya", "Türkiye", "Amerika", "Mars"], c: 0 },
+        { q: "Sence evimizde en çok ne olacak?", a: ["Aşk", "Teknoloji", "Kedi/Köpek", "Yemek"], c: 0 },
+        { q: "Balayı için hayalimizdeki kıta?", a: ["Avrupa", "Asya", "Amerika", "Antarktika"], c: 0 },
+        { q: "Bizim kaç çocuğumuz olmalı? 👶", a: ["2", "1", "3", "Futbol takımı"], c: 0 },
+
+        // --- 5. BÖLÜM: ZOR SORULAR (Dikkat Gerektirir) ---
+        { q: "Tyler'ın Mina'ya ilk hitabı neydi?", a: ["Hatırlamıyorum (Yanlış Cevap)", "İsmiyle", "Canım", "Merhaba"], c: 1 },
+        { q: "Mina sinirlendiğinde Tyler ne yapmalı? 🚨", a: ["Sessizce sarılmalı (Sanal)", "Mantık aramalı", "Kaçmalı", "Çikolata yollamalı"], c: 0 },
+        { q: "Aramızdaki mesafe (km) yaklaşık ne kadar?", a: ["2000-2500 km", "1000 km", "5000 km", "0 (Kalben)"], c: 0 },
+        { q: "Böcek'in en büyük korkusu nedir?", a: ["Seni kaybetmek", "Yükseklik", "Örümcek", "İnternetin kesilmesi"], c: 0 },
+        { q: "Bu uygulamayı (Böcek OS) kim yaptı?", a: ["Tyler", "Elon Musk", "Mark Zuckerberg", "Yapay Zeka"], c: 0 },
+        
+        // --- 6. BÖLÜM: RANDOM EĞLENCE ---
+        { q: "Şu an Tyler seni ne kadar seviyor?", a: ["Sonsuz ∞", "Çok", "Baya", "Evren kadar"], c: 0 },
+        { q: "Gece uyumadan önce yapılan son şey?", a: ["İyi geceler mesajı", "Su içmek", "Telefonu şarja takmak", "Tavanı izlemek"], c: 0 },
+        { q: "Tyler'ın en sevdiği özelliğin?", a: ["Gülüşün", "Gözlerin", "Sesin", "Hepsi"], c: 3 },
+        { q: "Mina'nın en sevdiği özelliğin?", a: ["Zekası", "Güzelliği", "Kalbi", "Hepsi"], c: 3 },
+        { q: "Bizim şarkımız ne olmalı?", a: ["Henüz seçmedik", "Romantik bir klasik", "Rap", "Pop"], c: 0 }
     ];
 
-    // Her gün farklı gelmesi için havuzdan rastgele 10 tane seçer
-    let activeQuestions = [...masterPool].sort(() => 0.5 - Math.random()).slice(0, 10);
+    // Soruları Karıştır (Shuffle)
+    function shuffle(array) {
+        return array.sort(() => Math.random() - 0.5);
+    }
+
+    // Cevapları da karıştır ki "A şıkkı" hep doğru olmasın
+    function prepareQuestions() {
+        const selectedQuestions = shuffle([...masterPool]).slice(0, 15); // Her seferinde rastgele 15 soru
+        return selectedQuestions.map(q => {
+            // Doğru cevabı tut
+            const correctText = q.a[q.c];
+            // Cevap şıklarını karıştır
+            const shuffledAnswers = shuffle([...q.a]);
+            // Yeni doğru cevap indeksini bul
+            const newCorrectIndex = shuffledAnswers.indexOf(correctText);
+            return { q: q.q, a: shuffledAnswers, c: newCorrectIndex };
+        });
+    }
+
+    let activeQuiz = prepareQuestions();
     let current = 0;
     let score = 0;
 
     function load() {
-        if(current >= activeQuestions.length) return showResult();
-        const q = activeQuestions[current];
-        document.getElementById("stats").innerText = `Soru ${current + 1} / ${activeQuestions.length}`;
-        document.getElementById("fill").style.width = ((current) / activeQuestions.length * 100) + "%";
+        if(current >= activeQuiz.length) return showResult();
+        
+        const q = activeQuiz[current];
+        document.getElementById("stats").innerText = `Soru ${current + 1} / ${activeQuiz.length}`;
+        document.getElementById("fill").style.width = ((current) / activeQuiz.length * 100) + "%";
         document.getElementById("q-text").innerText = q.q;
+        
         const opts = document.getElementById("options");
         opts.innerHTML = "";
         
@@ -82,15 +164,18 @@
     }
 
     function check(i, el) {
-        const correct = activeQuestions[current].c;
+        const correct = activeQuiz[current].c;
         const allOpts = document.getElementsByClassName("opt");
         for(let o of allOpts) o.style.pointerEvents = "none";
         
         if(i === correct) {
             el.classList.add("correct");
             score++;
+            // Konfetili Tebrik (Basit Efekt)
+            el.innerHTML += " ✅";
         } else {
             el.classList.add("wrong");
+            el.innerHTML += " ❌";
             allOpts[correct].classList.add("correct");
         }
         document.getElementById("next-btn").style.display = "inline-block";
@@ -102,18 +187,23 @@
     }
 
     function showResult() {
-        document.getElementById("fill").style.width = "100%";
-        document.getElementById("q-text").style.display = "none";
-        document.getElementById("options").style.display = "none";
-        document.getElementById("next-btn").style.display = "none";
+        document.getElementById("quiz-area").style.display = "none";
         const r = document.getElementById("result");
         r.style.display = "block";
         
-        let comment = score > 8 ? "Sen tam bir Mein uzmanısın! 😍" : "Biraz daha sohbet etmelisiniz! 😉";
-        r.innerHTML = `<h3 style="font-family:'Pacifico'; color:#d63384;">Test Bitti! ❤️</h3>
-                       <p style="font-size:1.5rem; font-weight:bold;">Skorun: 10 / ${score}</p>
-                       <p>${comment}</p>
-                       <button class="opt" style="width:100%;" onclick="location.reload()">Tekrar Çöz (Sorular Değişir!)</button>`;
+        let msg = "";
+        if(score === 15) msg = "🏆 İNANILMAZ! Sen tam bir 'Mein'sin! Bizi avucunun içi gibi biliyorsun. ❤️";
+        else if(score > 12) msg = "Harikasın! Ufak tefek hatalar olsa da aşkımız 10 numara! 😍";
+        else if(score > 8) msg = "Fena değil, ama Tyler ile biraz daha sohbet etmelisin. 😉";
+        else msg = "Eyvah! Böcek buna biraz üzülebilir... Hemen çalışmaya başla! 😂";
+
+        r.innerHTML = `
+            <span class="confetti">🎉</span>
+            <h2 style="font-size:2.5rem;">Test Bitti!</h2>
+            <p style="font-size:1.5rem; font-weight:bold; color:var(--main-pink);">Skorun: ${score} / 15</p>
+            <p style="font-size:1.1rem; line-height:1.6; margin:20px 0;">${msg}</p>
+            <button class="opt" style="width:100%; margin-top:20px; background:var(--dark-pink); color:white; border:none;" onclick="location.reload()">Tekrar Dene 🔄</button>
+        `;
     }
 
     load();
