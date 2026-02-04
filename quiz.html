@@ -3,45 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Böcek & Mein | Sonsuz Aşk Testi ♾️</title>
+    <title>Böcek & Mein | Hızlı Aşk Testi ⚡</title>
     <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Poppins:wght@300;600&display=swap" rel="stylesheet">
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
     <style>
-        :root { --bg: #121212; --card-bg: #1e1e1e; --text: #fdfbfb; --border: #333; --main-pink: #ff9a9e; --dark-pink: #d63384; --opt-hover: #2d2d2d; }
-        body.light-mode { --bg: #fff5f7; --card-bg: #ffffff; --text: #444; --border: #f0f0f0; --opt-hover: #fff5f6; }
+        :root { --bg: #121212; --card-bg: #1e1e1e; --text: #fdfbfb; --border: #333; --main-pink: #ff9a9e; --dark-pink: #d63384; }
+        body.light-mode { --bg: #fff5f7; --card-bg: #ffffff; --text: #444; --border: #f0f0f0; }
         body { font-family: 'Poppins', sans-serif; background: var(--bg); margin: 0; padding: 15px; color: var(--text); transition: 0.3s; min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-        
-        .quiz-card { 
-            background: var(--card-bg); padding: 25px; border-radius: 25px; 
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3); text-align: center; 
-            width: 100%; max-width: 500px; position: relative; border: 1px solid var(--border); 
-        }
-        
+        .quiz-card { background: var(--card-bg); padding: 25px; border-radius: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); text-align: center; width: 100%; max-width: 500px; position: relative; border: 1px solid var(--border); }
         .theme-btn { position: absolute; top: 15px; right: 15px; background: var(--border); border: none; border-radius: 50%; width: 35px; height: 35px; cursor: pointer; color: var(--text); font-size: 1.2rem; }
         h2 { font-family: 'Pacifico'; color: var(--main-pink); font-size: 2rem; margin-bottom: 5px; margin-top: 0; }
         small { display: block; opacity: 0.6; margin-bottom: 20px; font-size: 0.8rem; }
-        
         .progress-container { width: 100%; background: var(--border); height: 8px; border-radius: 10px; margin-bottom: 25px; overflow: hidden; }
         .progress-bar { height: 100%; background: linear-gradient(90deg, var(--main-pink), var(--dark-pink)); width: 0%; transition: 0.4s; }
-        
         .q-text { font-weight: 600; font-size: 1.2rem; margin-bottom: 30px; display: block; min-height: 50px; line-height: 1.4; }
-        
         .options-grid { display: grid; grid-template-columns: 1fr; gap: 12px; }
-        .opt { 
-            background: var(--card-bg); border: 2px solid var(--border); border-radius: 15px; 
-            padding: 15px; cursor: pointer; transition: 0.2s; font-weight: 500; color: var(--text); 
-            font-size: 0.95rem; user-select: none; text-align: center;
-        }
-        .opt:active { transform: scale(0.98); }
-        
+        .opt { background: var(--card-bg); border: 2px solid var(--border); border-radius: 15px; padding: 15px; cursor: pointer; transition: 0.2s; font-weight: 500; color: var(--text); font-size: 0.95rem; user-select: none; text-align: center; }
         .correct { background: #1b4332 !important; border-color: #2ecc71 !important; color: #fff !important; }
         .wrong { background: #5a1a1a !important; border-color: #e74c3c !important; color: #fff !important; }
-        
-        #next-btn { 
-            display: none; background: var(--dark-pink); color: white; border: none; 
-            padding: 15px 40px; border-radius: 50px; cursor: pointer; margin-top: 30px; 
-            font-weight: 600; box-shadow: 0 5px 15px rgba(214, 51, 132, 0.3); font-size: 1rem; width: 100%;
-        }
-        
+        #next-btn { display: none; background: var(--dark-pink); color: white; border: none; padding: 15px 40px; border-radius: 50px; cursor: pointer; margin-top: 30px; font-weight: 600; font-size: 1rem; width: 100%; }
         #result { display: none; padding: 20px; }
         .confetti { font-size: 3rem; margin-bottom: 10px; display: block; }
     </style>
@@ -50,45 +31,40 @@
 
 <div class="quiz-card">
     <button class="theme-btn" onclick="document.body.classList.toggle('light-mode')">🌓</button>
-    
     <div id="quiz-area">
         <h2>Aşk Testi ✨</h2>
-        <small id="stats">Soru 1 / 15</small>
+        <small id="stats">Soru 1 / 5</small>
         <div class="progress-container"><div class="progress-bar" id="fill"></div></div>
-        
         <span class="q-text" id="q-text">Sorular yükleniyor...</span>
         <div class="options-grid" id="options"></div>
         <button id="next-btn" onclick="nextQuestion()">Sıradaki Soru 👉</button>
     </div>
-
     <div id="result"></div>
 </div>
 
 <script>
+    const firebaseConfig = { apiKey: "AIzaSyBnCvyBVmQgEs4hl94K-WBYCWVpeJR9PtA", authDomain: "minatyler-b7212.firebaseapp.com", databaseURL: "https://minatyler-b7212-default-rtdb.europe-west1.firebasedatabase.app", projectId: "minatyler-b7212", storageBucket: "minatyler-b7212.firebasestorage.app", messagingSenderId: "599344339158", appId: "1:599344339158:web:11e6083e5d56ffae91d177" };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
     const masterPool = [
         { q: "Bizim 'Miladımız' (sevgili olduğumuz gün) hangisi? ❤️", a: ["7 Ocak 2026", "1 Ocak 2026", "27 Ocak 2026", "8 Aralık 2025"], c: 0 },
-        { q: "İlk görüntülü konuşmamız rekor kırarak tam kaç dakika sürdü? 📞", a: ["102 Dakika", "60 Dakika", "90 Dakika", "3 Saat"], c: 0 },
+        { q: "İlk görüntülü konuşmamız (31 Aralık) kaç dakika sürdü? 📞", a: ["5 Dakika", "30 Dakika", "1 Saat", "15 Dakika"], c: 0 },
+        { q: "102 dakikalık o meşhur rekor konuşma hangi tarihteydi? 📞", a: ["27 Ocak", "7 Ocak", "1 Ocak", "8 Aralık"], c: 0 },
         { q: "Böcek'in doğduğu ay hangisidir? 🐛", a: ["Mart", "Ekim", "Ocak", "Nisan"], c: 0 },
         { q: "Mina'nın (Mein) doğduğu ay hangisidir? 🎂", a: ["Ekim", "Mart", "Haziran", "Aralık"], c: 0 },
-        { q: "Böcek'in sana hitap ederken kullandığı o özel kelime hangisidir? 🇩🇪", a: ["Mein", "Schatz", "Liebe", "Canım"], c: 0 },
-        { q: "Anasınıfı fotoğrafları üzerine o derin sohbeti hangi tarihte yaptık? 📸", a: ["8 Aralık", "1 Ocak", "7 Ocak", "27 Ocak"], c: 0 },
         { q: "Böcek şu an tam olarak hangi Alman şehrinde yaşıyor? 🇩🇪", a: ["Augsburg", "Münih", "Berlin", "Frankfurt"], c: 0 },
         { q: "Mina (Mein) şu an hangi şehirde bulunuyor? 🇹🇷", a: ["Ankara", "İstanbul", "İzmir", "Bursa"], c: 0 },
-        { q: "Kavuşmamız için (ilk hedefimiz) belirlediğimiz tarih hangisi? ✈️", a: ["6 Şubat 2026", "14 Şubat", "1 Mart", "Yazın"], c: 0 },
-        { q: "Almanya'da 'Yıldırım Nikahı' hayali kurduğumuz o çılgın gün? 💍", a: ["28 Ocak", "7 Ocak", "14 Şubat", "Dün"], c: 0 },
-        { q: "Bizim ilişkimizi en iyi anlatan emoji hangisidir? ✨", a: ["🐛 (Böcek)", "❤️ (Klasik)", "🔥 (Tutku)", "🧿 (Nazar)"], c: 0 },
-        { q: "Mina sinirlendiğinde Böcek'in yapması gereken en mantıklı şey? 🛡️", a: ["Öpücük atıp susturmalı", "Küsülmeli", "Tartışmalı", "Kaçmalı"], c: 0 },
+        { q: "Kavuşmamız için belirlediğimiz hedef tarih? ✈️", a: ["6 Şubat 2026", "14 Şubat", "1 Mart", "Yazın"], c: 0 },
         { q: "Böcek Augsburg'da en çok neyi özlüyor? (Sen hariç!) 😋", a: ["Yemekleri", "İnterneti", "Havayı", "Uykuyu"], c: 0 },
-        { q: "Bizim 'uğurlu' sayımız veya o meşhur tarihimiz nedir? ✨", a: ["7", "102", "13", "∞"], c: 0 },
-        { q: "Şu an Böcek seni ne kadar çok seviyor? 🥰", a: ["Sonsuz ∞", "Çok", "Baya", "Evren kadar"], c: 0 }
+        { q: "Böcek'in paneldeki adı nedir? 🛠️", a: ["Böcek OS", "Tyler Admin", "Mein's Love", "Augsburg King"], c: 0 },
+        { q: "Gece 12'den sonra hangi emojiler açılır? 🔞", a: ["Sapık Emojiler", "Uyku Emojileri", "Yemek Emojileri", "Üzgün Emojiler"], c: 0 }
     ];
 
-    function shuffle(array) {
-        return array.sort(() => Math.random() - 0.5);
-    }
+    function shuffle(array) { return array.sort(() => Math.random() - 0.5); }
 
     function prepareQuestions() {
-        const selected = shuffle([...masterPool]).slice(0, 15); 
+        const selected = shuffle([...masterPool]).slice(0, 5); // Sadece 5 soru
         return selected.map(q => {
             const correctText = q.a[q.c];
             const shuffledA = shuffle([...q.a]);
@@ -102,15 +78,12 @@
 
     function load() {
         if(current >= activeQuiz.length) return showResult();
-        
         const q = activeQuiz[current];
-        document.getElementById("stats").innerText = `Soru ${current + 1} / ${activeQuiz.length}`;
-        document.getElementById("fill").style.width = ((current) / activeQuiz.length * 100) + "%";
+        document.getElementById("stats").innerText = `Soru ${current + 1} / 5`;
+        document.getElementById("fill").style.width = (current / 5 * 100) + "%";
         document.getElementById("q-text").innerText = q.q;
-        
         const opts = document.getElementById("options");
         opts.innerHTML = "";
-        
         q.a.forEach((o, i) => {
             const d = document.createElement("div");
             d.className = "opt";
@@ -125,48 +98,31 @@
         const correct = activeQuiz[current].c;
         const allOpts = document.querySelectorAll(".opt");
         allOpts.forEach(btn => btn.style.pointerEvents = "none");
-        
         if(i === correct) {
             el.classList.add("correct");
             score++;
-            el.innerHTML += " ✅";
-            
-            // --- SKORUN ARTMASINI SAĞLAYAN KRİTİK MESAJ ---
-            window.parent.postMessage('quizCorrect', '*'); 
-
+            db.ref('kisses/Mina').transaction(c => (c || 0) + 1);
         } else {
             el.classList.add("wrong");
-            el.innerHTML += " ❌";
             allOpts[correct].classList.add("correct");
         }
         document.getElementById("next-btn").style.display = "block";
     }
 
-    function nextQuestion() {
-        current++;
-        load();
-    }
+    function nextQuestion() { current++; load(); }
 
     function showResult() {
         document.getElementById("quiz-area").style.display = "none";
         const r = document.getElementById("result");
         r.style.display = "block";
-        
-        let msg = "";
-        if(score === 15) msg = "🏆 İNANILMAZ! Sen tam bir 'Mein'sin! Böcek seninle gurur duyuyor. ❤️";
-        else if(score > 12) msg = "Harikasın! Ufak tefek hatalar olsa da aşkımız 10 numara! 😍";
-        else if(score > 8) msg = "Fena değil, ama Böcek ile biraz daha sohbet etmelisin. 😉";
-        else msg = "Eyvah! Böcek buna biraz üzülebilir... Hemen çalışmaya başla! 😂";
-
         r.innerHTML = `
             <span class="confetti">🎉</span>
             <h2 style="font-size:2.5rem;">Test Bitti!</h2>
-            <p style="font-size:1.5rem; font-weight:bold; color:var(--main-pink);">Skorun: ${score} / 15</p>
-            <p style="font-size:1.1rem; line-height:1.6; margin:20px 0;">${msg}</p>
+            <p style="font-size:1.5rem; font-weight:bold; color:var(--main-pink);">Skorun: ${score} / 5</p>
+            <p>${score === 5 ? "Sen gerçek bir aşıksın! ❤️" : "Biraz daha pratik lazım 😉"}</p>
             <button class="opt" style="width:100%; margin-top:20px; background:var(--dark-pink); color:white; border:none;" onclick="location.reload()">Tekrar Dene 🔄</button>
         `;
     }
-
     load();
 </script>
 </body>
